@@ -1,0 +1,13 @@
+-- ==============================================================================
+-- TITIKPKL SEED DATA
+-- (Jalankan setelah membuat akun auth atau sebagai testing)
+-- ==============================================================================
+
+-- Catatan: Seed data ini untuk referensi struktur testing jika ingin memasukkan
+-- contoh pedagang langsung melalui SQL.
+--
+-- Contoh query untuk melihat pedagang aktif:
+-- SELECT m.business_name, m.business_code, m.category, m.is_premium, vl.latitude, vl.longitude, vl.is_live
+-- FROM public.merchants m
+-- JOIN public.vendor_locations vl ON vl.merchant_id = m.id
+-- WHERE vl.is_live = true;

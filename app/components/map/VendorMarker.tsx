@@ -15,9 +15,10 @@ const Marker = dynamic(
 
 interface VendorMarkerProps {
   position: [number, number];
+  onClick?: () => void;
 }
 
-export function VendorMarker({ position }: VendorMarkerProps) {
+export function VendorMarker({ position, onClick }: VendorMarkerProps) {
   const icon = useMemo(() => {
     if (typeof window === 'undefined') return undefined;
     const L = require('leaflet');
@@ -28,7 +29,16 @@ export function VendorMarker({ position }: VendorMarkerProps) {
     });
   }, []);
 
+  const eventHandlers = useMemo(
+    () => ({
+      click() {
+        if (onClick) onClick();
+      },
+    }),
+    [onClick]
+  );
+
   if (!icon) return null;
 
-  return <Marker position={position} icon={icon} />;
+  return <Marker position={position} icon={icon} eventHandlers={eventHandlers} />;
 }
