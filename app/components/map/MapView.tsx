@@ -41,6 +41,7 @@ export function MapView({
 
   return (
     <MapContainer
+      key={`${center[0]}-${center[1]}`}
       center={center}
       zoom={zoom}
       style={{ width: '100%', height: '100dvh' }}
