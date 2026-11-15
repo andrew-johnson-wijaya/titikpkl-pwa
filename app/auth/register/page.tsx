@@ -68,71 +68,79 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-dvh flex flex-col justify-center items-center bg-gray-100 py-10 px-5">
-      <div className="w-full max-w-[420px] bg-white p-7 rounded-2xl shadow-lg border border-gray-100">
+    <div className="min-h-dvh flex flex-col justify-center items-center bg-gradient-to-b from-amber-500/10 via-slate-50 to-white py-10 px-5">
+      <div className="w-full max-w-[420px] bg-white p-7 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-200/90 animate-slide-up">
         <div className="text-center mb-6">
-          <Link href="/" className="inline-block">
-            <h1 className="text-2xl font-bold text-amber-600 mb-1">TitikPKL</h1>
-          </Link>
-          <p className="text-sm text-gray-500">Mulai bergabung ke ekosistem PKL</p>
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-amber-500/15 text-2xl mb-2">
+            🍢
+          </div>
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+            Daftar <span className="text-amber-600">TitikPKL</span>
+          </h1>
+          <p className="text-xs text-slate-500 mt-1">
+            Bergabung ke ekosistem pedagang kaki lima modern
+          </p>
         </div>
 
         {errorMessage && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-xs">
+          <div className="mb-4 p-3.5 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs font-medium">
             {errorMessage}
           </div>
         )}
 
         {successMessage && (
-          <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-lg text-xs leading-relaxed">
+          <div className="mb-4 p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl text-xs leading-relaxed">
+            <p className="font-bold text-sm mb-1 text-emerald-900">🎉 Berhasil Mendaftar!</p>
             {successMessage}
             <div className="mt-3">
               <Link
                 href="/auth/login"
-                className="font-bold underline text-emerald-800"
+                className="inline-block py-2 px-3 rounded-lg bg-emerald-600 text-white font-bold text-xs hover:bg-emerald-700"
               >
-                Ke Halaman Masuk →
+                Masuk ke Akun Sekarang →
               </Link>
             </div>
           </div>
         )}
 
         {!successMessage && (
-          <form onSubmit={handleRegister} className="flex flex-col gap-4">
+          <form onSubmit={handleRegister} className="flex flex-col gap-3.5">
             {/* Pilihan Role */}
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+              <label className="block text-xs font-bold text-slate-700 mb-1.5">
                 Daftar Sebagai
               </label>
               <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
                   onClick={() => setRole('CONSUMER')}
-                  className={`py-2.5 px-3 rounded-lg text-xs font-bold border transition-colors cursor-pointer ${
+                  className={`py-2.5 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                     role === 'CONSUMER'
-                      ? 'bg-gray-900 text-white border-gray-900 shadow-sm'
-                      : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
+                      ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
+                      : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-white'
                   }`}
                 >
-                  👋 Pembeli
+                  <span>🛵</span>
+                  <span>Pembeli</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setRole('MERCHANT')}
-                  className={`py-2.5 px-3 rounded-lg text-xs font-bold border transition-colors cursor-pointer ${
+                  className={`py-2.5 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                     role === 'MERCHANT'
-                      ? 'bg-green-600 text-white border-green-600 shadow-sm'
-                      : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
+                      ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm shadow-emerald-600/25'
+                      : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-white'
                   }`}
                 >
-                  🛒 Pedagang PKL
+                  <span>🍢</span>
+                  <span>Pedagang PKL</span>
                 </button>
               </div>
             </div>
 
             {/* Nama Lengkap */}
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1">
+              <label className="block text-xs font-bold text-slate-700 mb-1">
                 Nama Lengkap
               </label>
               <input
@@ -141,7 +149,7 @@ export default function RegisterPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="cth: Roni Gunawan"
-                className="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all text-slate-900 placeholder:text-slate-400"
               />
             </div>
 
@@ -149,7 +157,7 @@ export default function RegisterPage() {
             {role === 'MERCHANT' && (
               <>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
                     Nama Usaha / Gerobak
                   </label>
                   <input
@@ -158,23 +166,23 @@ export default function RegisterPage() {
                     value={businessName}
                     onChange={(e) => setBusinessName(e.target.value)}
                     placeholder="cth: Sate Madura Cak Roni"
-                    className="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-emerald-200 bg-emerald-50/40 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all text-slate-900 placeholder:text-slate-400"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
                     Kategori Makanan / Minuman
                   </label>
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all bg-white"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all text-slate-900"
                   >
                     <option value="Sate">Sate</option>
-                    <option value="Bakso & Mie">Bakso & Mie</option>
+                    <option value="Bakso & Mie">Bakso &amp; Mie</option>
                     <option value="Nasi Goreng">Nasi Goreng</option>
                     <option value="Gorengan">Gorengan</option>
-                    <option value="Minuman & Kopi">Minuman & Kopi</option>
+                    <option value="Minuman & Kopi">Minuman &amp; Kopi</option>
                     <option value="Jajanan Tradisional">Jajanan Tradisional</option>
                     <option value="Lainnya">Lainnya</option>
                   </select>
@@ -184,7 +192,7 @@ export default function RegisterPage() {
 
             {/* Email */}
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1">
+              <label className="block text-xs font-bold text-slate-700 mb-1">
                 Alamat Email
               </label>
               <input
@@ -193,13 +201,13 @@ export default function RegisterPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="nama@email.com"
-                className="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all text-slate-900 placeholder:text-slate-400"
               />
             </div>
 
             {/* Password */}
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1">
+              <label className="block text-xs font-bold text-slate-700 mb-1">
                 Kata Sandi (min. 6 karakter)
               </label>
               <input
@@ -209,25 +217,25 @@ export default function RegisterPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all text-slate-900 placeholder:text-slate-400"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className={`w-full mt-2 py-3 text-white font-bold rounded-xl text-sm transition-colors cursor-pointer disabled:opacity-50 ${
+              className={`w-full mt-2 py-3.5 text-white font-bold rounded-xl text-sm transition-all cursor-pointer shadow-md disabled:opacity-50 active:scale-[0.99] ${
                 role === 'MERCHANT'
-                  ? 'bg-green-600 hover:bg-green-700'
-                  : 'bg-amber-600 hover:bg-amber-700'
+                  ? 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/30'
+                  : 'bg-amber-600 hover:bg-amber-700 shadow-amber-600/30'
               }`}
             >
-              {loading ? 'Mendaftarkan...' : 'Daftar Sekarang'}
+              {loading ? 'Mendaftarkan Akun...' : 'Daftar Sekarang'}
             </button>
           </form>
         )}
 
-        <div className="mt-6 text-center text-xs text-gray-600">
+        <div className="mt-6 pt-5 border-t border-slate-100 text-center text-xs text-slate-600">
           Sudah punya akun?{' '}
           <Link
             href="/auth/login"
@@ -237,10 +245,10 @@ export default function RegisterPage() {
           </Link>
         </div>
 
-        <div className="mt-4 text-center">
+        <div className="mt-3 text-center">
           <Link
             href="/"
-            className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-xs text-slate-400 hover:text-slate-600 transition-colors"
           >
             ← Kembali ke Beranda
           </Link>

@@ -18,32 +18,41 @@ export function VendorNotification({
   if (!visible) return null;
 
   return (
-    <div className="absolute top-[80px] left-1/2 -translate-x-1/2 w-[92%] max-w-[420px] bg-amber-50/95 backdrop-blur-sm border-l-4 border-amber-600 p-3.5 rounded-2xl shadow-xl z-[1000] border border-amber-200">
-      <div className="flex justify-between items-start mb-1">
+    <div className="absolute top-[88px] left-1/2 -translate-x-1/2 w-[94%] max-w-[460px] bg-slate-950/90 backdrop-blur-md text-white p-3.5 rounded-2xl shadow-2xl z-[1000] border border-white/15 animate-slide-up">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-lg shrink-0">
+          🔔
+        </div>
+
         <div
           onClick={onClick}
-          className="flex-1 cursor-pointer hover:opacity-90 transition-opacity"
+          className="flex-1 cursor-pointer hover:opacity-90 transition-opacity min-w-0"
         >
-          <p className="m-0 text-xs font-bold text-amber-800 flex items-center gap-1.5">
-            <span>🔔</span> PKL Terdekat Terdeteksi!
-          </p>
-          <p className="m-0 mt-0.5 text-xs text-amber-950 leading-snug">
-            <strong>{vendorName}</strong> sedang aktif berdagang (~
-            {distanceText} dari lokasimu).
+          <div className="flex items-center gap-2">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-amber-400">
+              PKL Terdekat Aktif
+            </p>
+            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-white/20 text-white font-semibold">
+              ~{distanceText}
+            </span>
+          </div>
+          <p className="text-xs font-semibold text-slate-100 truncate mt-0.5">
+            {vendorName}
           </p>
         </div>
 
-        <div className="flex items-center gap-2 ml-2">
+        <div className="flex items-center gap-1.5 shrink-0">
           <button
             onClick={onClick}
-            className="text-[11px] font-bold text-amber-700 underline whitespace-nowrap cursor-pointer hover:text-amber-900"
+            className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl transition-colors cursor-pointer shadow-sm"
           >
-            Menu →
+            Menu
           </button>
           {onDismiss && (
             <button
               onClick={onDismiss}
-              className="text-gray-400 hover:text-gray-600 text-xs p-1"
+              aria-label="Tutup notifikasi"
+              className="w-7 h-7 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white flex items-center justify-center text-xs transition-colors cursor-pointer"
             >
               ✕
             </button>

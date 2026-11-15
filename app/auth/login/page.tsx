@@ -53,25 +53,30 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="h-dvh flex flex-col justify-center items-center bg-gray-100 px-5">
-      <div className="w-full max-w-[380px] bg-white p-7 rounded-2xl shadow-lg border border-gray-100">
+    <div className="min-h-dvh flex flex-col justify-center items-center bg-gradient-to-b from-amber-500/10 via-slate-50 to-white px-5 py-8">
+      <div className="w-full max-w-[390px] bg-white p-7 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-200/90 animate-slide-up">
         <div className="text-center mb-6">
-          <Link href="/" className="inline-block">
-            <h1 className="text-2xl font-bold text-amber-600 mb-1">TitikPKL</h1>
-          </Link>
-          <p className="text-sm text-gray-500">Masuk ke akun TitikPKL kamu</p>
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-amber-500/15 text-2xl mb-2">
+            🍢
+          </div>
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+            Masuk <span className="text-amber-600">TitikPKL</span>
+          </h1>
+          <p className="text-xs text-slate-500 mt-1">
+            Lanjutkan ke lapak dagang atau peta jajanan
+          </p>
         </div>
 
         {errorMessage && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-xs">
+          <div className="mb-4 p-3.5 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs font-medium">
             {errorMessage}
           </div>
         )}
 
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
           <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-1">
-              Email
+            <label className="block text-xs font-bold text-slate-700 mb-1.5">
+              Alamat Email
             </label>
             <input
               type="email"
@@ -79,12 +84,12 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="nama@email.com"
-              className="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all text-slate-900 placeholder:text-slate-400"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-1">
+            <label className="block text-xs font-bold text-slate-700 mb-1.5">
               Kata Sandi
             </label>
             <input
@@ -93,20 +98,20 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all text-slate-900 placeholder:text-slate-400"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-2 py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-sm transition-colors cursor-pointer disabled:opacity-50"
+            className="w-full mt-2 py-3.5 bg-amber-600 hover:bg-amber-700 active:scale-[0.99] text-white font-bold rounded-xl text-sm transition-all cursor-pointer shadow-md shadow-amber-600/25 disabled:opacity-50"
           >
-            {loading ? 'Memproses...' : 'Masuk'}
+            {loading ? 'Memproses Masuk...' : 'Masuk ke Akun'}
           </button>
         </form>
 
-        <div className="mt-6 text-center text-xs text-gray-600">
+        <div className="mt-6 pt-5 border-t border-slate-100 text-center text-xs text-slate-600">
           Belum punya akun?{' '}
           <Link
             href="/auth/register"
@@ -116,10 +121,10 @@ export default function LoginPage() {
           </Link>
         </div>
 
-        <div className="mt-4 text-center">
+        <div className="mt-3 text-center">
           <Link
             href="/"
-            className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-xs text-slate-400 hover:text-slate-600 transition-colors"
           >
             ← Kembali ke Beranda
           </Link>

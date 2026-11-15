@@ -6,11 +6,9 @@ import { MapView } from '@/app/components/map/MapView';
 import { VendorMarker } from '@/app/components/map/VendorMarker';
 import { UserMarker } from '@/app/components/map/UserMarker';
 import { SearchBar } from '@/app/components/consumer/SearchBar';
-import { VendorNotification } from '@/app/components/consumer/VendorNotification';
 import { VendorMenuModal } from '@/app/components/consumer/VendorMenuModal';
 import { VendorListView, type VendorListItem } from '@/app/components/consumer/VendorListView';
-import { BackButton } from '@/app/components/ui/BackButton';
-import { DEFAULT_CENTER, NEARBY_NOTIFICATION_DELAY_MS } from '@/app/lib/constants';
+import { DEFAULT_CENTER } from '@/app/lib/constants';
 import { calculateDistanceMeters, formatDistance } from '@/app/lib/utils/distance';
 import { createClient } from '@/app/lib/supabase/client';
 
@@ -18,7 +16,7 @@ export default function ConsumerPage() {
   const router = useRouter();
   const [supabase] = useState(() => createClient());
 
-  // State Lokasi Pengguna
+  // State Lokasi Pengguna & Center Peta
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
   const [mapCenter, setMapCenter] = useState<[number, number]>(DEFAULT_CENTER);
 
@@ -30,8 +28,7 @@ export default function ConsumerPage() {
   const [selectedCategory, setSelectedCategory] = useState('Semua');
   const [isListView, setIsListView] = useState(false);
 
-  // State Notifikasi
-  const [showNotification, setShowNotification] = useState(false);
+  // State Info Pedagang Terdekat untuk Bottom Sheet
   const [nearestVendor, setNearestVendor] = useState<{
     name: string;
     distanceText: string;
@@ -122,7 +119,6 @@ export default function ConsumerPage() {
           table: 'vendor_locations',
         },
         () => {
-          // Ketika pedagang update lokasi atau status is_live berubah, refresh otomatis!
           fetchVendors();
         }
       )
@@ -137,7 +133,6 @@ export default function ConsumerPage() {
   const vendorsWithDistance = useMemo(() => {
     const referencePos = userLocation || DEFAULT_CENTER;
 
-    // Jika belum ada pedagang live dari DB, berikan contoh fallback agar peta tetap interaktif
     const baseList: VendorListItem[] =
       vendors.length > 0
         ? vendors
@@ -160,7 +155,7 @@ export default function ConsumerPage() {
             },
             {
               id: 'sample-3',
-              businessName: 'Gorengan Renyah Ibu Siti',
+              businessName: 'Gorengan Renyah Bu Siti',
               category: 'Gorengan',
               isPremium: false,
               latitude: referencePos[0] + 0.0035,
@@ -199,21 +194,15 @@ export default function ConsumerPage() {
     });
   }, [vendorsWithDistance, searchQuery, selectedCategory]);
 
-  // 6. Real Proximity Notification (Deteksi PKL < 1km)
+  // 6. Set Pedagang Terdekat untuk Bottom Bar
   useEffect(() => {
     if (vendorsWithDistance.length > 0) {
       const closest = vendorsWithDistance[0];
-      if (closest && closest.distanceMeters !== undefined && closest.distanceMeters <= 1200) {
+      if (closest && closest.distanceMeters !== undefined) {
         setNearestVendor({
           name: closest.businessName,
           distanceText: formatDistance(closest.distanceMeters),
         });
-
-        const timer = setTimeout(() => {
-          setShowNotification(true);
-        }, NEARBY_NOTIFICATION_DELAY_MS);
-
-        return () => clearTimeout(timer);
       }
     }
   }, [vendorsWithDistance]);
@@ -247,8 +236,8 @@ export default function ConsumerPage() {
   };
 
   return (
-    <div className="relative w-full h-dvh overflow-hidden bg-gray-100">
-      {/* 🗺️ PETA LEAFLET */}
+    <div className="relative w-full h-dvh overflow-hidden bg-slate-100">
+      {/* 🗺️ PETA LEAFLET DENGAN GAYA MINIMALIS (GOJEK/GRAB STYLE) */}
       <MapView center={mapCenter}>
         {/* Pin Lokasi Pembeli */}
         {userLocation && <UserMarker position={userLocation} />}
@@ -258,13 +247,13 @@ export default function ConsumerPage() {
           <VendorMarker
             key={vendor.id}
             position={[vendor.latitude, vendor.longitude]}
+            businessName={vendor.businessName}
+            category={vendor.category}
+            isPremium={vendor.isPremium}
             onClick={() => handleOpenVendorDetail(vendor)}
           />
         ))}
       </MapView>
-
-      {/* Tombol Keluar Navigasi */}
-      <BackButton onClick={() => router.push('/')} />
 
       {/* 🔍 SEARCH BAR & FILTER KATEGORI */}
       <SearchBar
@@ -275,6 +264,7 @@ export default function ConsumerPage() {
         activeCount={filteredVendors.length}
         isListView={isListView}
         onToggleView={() => setIsListView((prev) => !prev)}
+        onBack={() => router.push('/')}
       />
 
       {/* 📋 VIEW DAFTAR PKL (OVERLAY) */}
@@ -287,34 +277,72 @@ export default function ConsumerPage() {
         />
       )}
 
-      {/* 🔔 NOTIFIKASI PKL TERDEKAT RIIL */}
-      {!isListView && nearestVendor && (
-        <VendorNotification
-          visible={showNotification}
-          vendorName={nearestVendor.name}
-          distanceText={nearestVendor.distanceText}
-          onClick={() => {
-            const match = filteredVendors.find(
-              (v) => v.businessName === nearestVendor.name
-            );
-            if (match) handleOpenVendorDetail(match);
-          }}
-          onDismiss={() => setShowNotification(false)}
-        />
-      )}
-
-      {/* 🎯 FLOATING BUTTON: LOKASIKU */}
+      {/* 🛵 FLOATING STATUS BAR & CONTROLS (MIRIP TAMPILAN LIVE TRACKING GOJEK / GRAB) */}
       {!isListView && (
-        <button
-          onClick={handleRecenterUser}
-          className="absolute bottom-6 right-5 z-[1000] w-12 h-12 rounded-full bg-white text-gray-800 shadow-xl border border-gray-200 flex items-center justify-center text-lg hover:bg-gray-50 transition-all cursor-pointer"
-          title="Pusatkan ke Lokasiku"
-        >
-          🎯
-        </button>
+        <div className="absolute bottom-0 left-0 right-0 z-[1000] flex flex-col items-center pointer-events-none">
+          {/* Baris Tombol Melayang di Atas Bottom Sheet */}
+          <div className="w-full max-w-md px-4 mb-3 flex items-center justify-between pointer-events-auto">
+            {/* Tombol Kembali Lingkaran (Kiri Bawah) */}
+            <button
+              onClick={() => router.push('/')}
+              className="w-11 h-11 rounded-full bg-white text-slate-800 shadow-lg shadow-slate-900/10 border border-slate-200/80 flex items-center justify-center font-bold text-base hover:bg-slate-50 active:scale-95 transition-all cursor-pointer"
+              title="Kembali ke Beranda"
+              aria-label="Kembali"
+            >
+              ←
+            </button>
+
+            {/* Tombol Pusatkan ke Lokasiku (Kanan Bawah) */}
+            <button
+              onClick={handleRecenterUser}
+              className="px-3.5 py-2.5 rounded-full bg-white text-slate-800 shadow-lg shadow-slate-900/10 border border-slate-200/80 flex items-center gap-1.5 font-bold text-xs hover:bg-slate-50 active:scale-95 transition-all cursor-pointer"
+              title="Pusatkan ke Lokasiku"
+            >
+              <span>🎯</span>
+              <span>Lokasiku</span>
+            </button>
+          </div>
+
+          {/* Bottom Sheet PKL Terdekat (Hijau Bersih seperti Referensi) */}
+          {nearestVendor && (
+            <div
+              onClick={() => {
+                const match = filteredVendors.find(
+                  (v) => v.businessName === nearestVendor.name
+                );
+                if (match) handleOpenVendorDetail(match);
+              }}
+              className="w-full max-w-md bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-4 rounded-t-3xl shadow-2xl cursor-pointer pointer-events-auto transition-colors flex items-center justify-between gap-3 animate-slide-up"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-10 h-10 rounded-full bg-emerald-500/80 border border-white/20 flex items-center justify-center text-xl shrink-0">
+                  🍢
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <p className="text-xs font-bold text-emerald-100 uppercase tracking-wider">
+                      Gerobak Terdekat
+                    </p>
+                    <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-emerald-800/60 text-white font-semibold">
+                      ~{nearestVendor.distanceText}
+                    </span>
+                  </div>
+                  <p className="text-sm font-bold text-white truncate mt-0.5">
+                    {nearestVendor.name}
+                  </p>
+                </div>
+              </div>
+
+              <div className="shrink-0 flex items-center gap-1 text-xs font-bold bg-white text-emerald-800 px-3 py-1.5 rounded-xl shadow-xs">
+                <span>Menu</span>
+                <span>→</span>
+              </div>
+            </div>
+          )}
+        </div>
       )}
 
-      {/* 📋 MODAL MENU & HARGA JAJANAN */}
+      {/* 📋 MODAL / DRAWER MENU & HARGA JAJANAN */}
       <VendorMenuModal
         isOpen={isMenuOpen}
         onClose={() => setIsMenuOpen(false)}

@@ -2,15 +2,18 @@
 
 interface BackButtonProps {
   onClick: () => void;
+  label?: string;
 }
 
-export function BackButton({ onClick }: BackButtonProps) {
+export function BackButton({ onClick, label = 'Beranda' }: BackButtonProps) {
   return (
     <button
       onClick={onClick}
-      className="absolute top-5 left-5 z-[1000] px-4 py-2.5 rounded-lg bg-white border border-gray-300 cursor-pointer font-bold shadow-md hover:bg-gray-50 transition-colors"
+      aria-label="Kembali ke Beranda"
+      className="absolute top-4 left-4 z-[1000] h-10 px-3.5 rounded-full bg-white/95 backdrop-blur-md border border-slate-200/90 text-slate-800 font-bold shadow-lg hover:bg-white active:scale-95 transition-all cursor-pointer flex items-center gap-1.5 text-xs"
     >
-      ← Keluar
+      <span className="text-base font-bold leading-none">←</span>
+      {label && <span className="font-semibold">{label}</span>}
     </button>
   );
 }

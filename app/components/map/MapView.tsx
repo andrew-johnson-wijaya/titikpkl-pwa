@@ -33,8 +33,11 @@ export function MapView({
 
   if (!isClient) {
     return (
-      <div className="w-full h-dvh flex items-center justify-center bg-gray-100">
-        <p className="text-gray-500">Memuat peta...</p>
+      <div className="w-full h-dvh flex items-center justify-center bg-slate-50">
+        <div className="flex flex-col items-center gap-2">
+          <div className="w-8 h-8 border-3 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-xs font-semibold text-slate-500">Memuat peta...</p>
+        </div>
       </div>
     );
   }
@@ -47,9 +50,16 @@ export function MapView({
       style={{ width: '100%', height: '100dvh' }}
       zoomControl={false}
     >
+      {/* 
+        Tile Server Esri World Light Gray Canvas:
+        - 100% GRATIS & TANPA API KEY
+        - Peta abu-abu terang yang sangat bersih — TIDAK ADA ikon POI (salib, restoran, rumah sakit, dll.)
+        - Hanya menampilkan jalanan & area, sempurna untuk tampilan minimalis
+      */}
       <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution="&copy; OpenStreetMap"
+        url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}"
+        attribution='&copy; <a href="https://www.esri.com/">Esri</a>, HERE, Garmin, &copy; OpenStreetMap contributors'
+        maxZoom={16}
       />
       {children}
     </MapContainer>

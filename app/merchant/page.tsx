@@ -72,12 +72,19 @@ export default function MerchantPage() {
   };
 
   return (
-    <div className="relative w-full h-dvh overflow-hidden">
+    <div className="relative w-full h-dvh overflow-hidden bg-slate-900">
       <MapView center={location}>
-        {isTracking && <VendorMarker position={location} />}
+        {isTracking && (
+          <VendorMarker
+            position={location}
+            businessName={merchant?.business_name || 'Lapak Daganganmu'}
+            category={merchant?.category || 'Kuliner'}
+            isPremium={isPremiumActive}
+          />
+        )}
       </MapView>
 
-      <BackButton onClick={handleExit} />
+      <BackButton onClick={handleExit} label="Beranda" />
 
       <MerchantPanel
         businessName={merchant?.business_name}

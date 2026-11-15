@@ -74,13 +74,18 @@ export default function MerchantProfilePage() {
   };
 
   return (
-    <div className="min-h-dvh bg-gray-50 p-5 flex flex-col">
+    <div className="min-h-dvh bg-slate-50 p-4 sm:p-6 flex flex-col max-w-md mx-auto">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <h2 className="m-0 text-gray-900 text-xl font-bold">Profil Usaha PKL</h2>
+        <div>
+          <span className="text-[11px] font-bold uppercase tracking-wider text-amber-600">
+            Dashboard Mitra
+          </span>
+          <h2 className="m-0 text-slate-900 text-xl font-bold">Profil Usaha PKL</h2>
+        </div>
         <button
           onClick={() => router.back()}
-          className="w-9 h-9 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-gray-100 cursor-pointer transition-colors shadow-sm"
+          className="w-9 h-9 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-100 cursor-pointer transition-colors shadow-xs"
         >
           ✕
         </button>

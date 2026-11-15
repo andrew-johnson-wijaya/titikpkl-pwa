@@ -9,13 +9,16 @@ export function TrackingButton({ isTracking, onToggle }: TrackingButtonProps) {
   return (
     <button
       onClick={onToggle}
-      className={`w-full p-4 rounded-xl text-white font-bold text-base cursor-pointer transition-colors ${
+      className={`w-full py-4 px-5 rounded-2xl text-white font-bold text-sm sm:text-base cursor-pointer transition-all active:scale-[0.99] flex items-center justify-center gap-2.5 ${
         isTracking
-          ? 'bg-red-600 hover:bg-red-700'
-          : 'bg-green-600 hover:bg-green-700'
+          ? 'bg-rose-600 hover:bg-rose-700 shadow-lg shadow-rose-600/30'
+          : 'bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-600/30'
       }`}
     >
-      {isTracking ? 'Tutup Dagangan (Keluar)' : 'Mulai Berdagang (Masuk)'}
+      <span className="text-lg">{isTracking ? '⏹️' : '📡'}</span>
+      <span>
+        {isTracking ? 'Tutup Siaran Dagangan (Offline)' : 'Mulai Berdagang (Siarkan Lokasi)'}
+      </span>
     </button>
   );
 }

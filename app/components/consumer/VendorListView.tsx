@@ -19,6 +19,16 @@ interface VendorListViewProps {
   query: string;
 }
 
+function getCategoryEmoji(category = ''): string {
+  const cat = category.toLowerCase();
+  if (cat.includes('sate')) return '🍢';
+  if (cat.includes('bakso') || cat.includes('mie')) return '🍜';
+  if (cat.includes('nasi')) return '🍛';
+  if (cat.includes('goreng')) return '🥟';
+  if (cat.includes('minum') || cat.includes('kopi') || cat.includes('es')) return '🧋';
+  return '🛒';
+}
+
 export function VendorListView({
   vendors,
   onSelectVendor,
@@ -26,86 +36,95 @@ export function VendorListView({
   query,
 }: VendorListViewProps) {
   return (
-    <div className="absolute inset-0 top-[110px] z-[900] bg-gray-100/95 backdrop-blur-md overflow-y-auto p-4 pb-20">
+    <div className="absolute inset-0 top-[110px] z-[900] bg-slate-900/10 backdrop-blur-md overflow-y-auto p-4 pb-24 animate-fade-in">
       <div className="max-w-[480px] mx-auto flex flex-col gap-3">
-        <div className="flex justify-between items-center mb-1 px-1">
-          <h2 className="text-sm font-bold text-gray-800">
-            Daftar Pedagang PKL Aktif ({vendors.length})
+        <div className="flex justify-between items-center px-1">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-slate-700 bg-white/80 px-2.5 py-1 rounded-lg backdrop-blur-xs">
+            Gerobak Terdekat ({vendors.length})
           </h2>
-          <span className="text-[11px] text-gray-500">
-            Urut berdasarkan terdekat
+          <span className="text-[11px] font-medium text-slate-600 bg-white/80 px-2.5 py-1 rounded-lg backdrop-blur-xs">
+            Urut dari terdekat
           </span>
         </div>
 
         {vendors.length === 0 ? (
-          <div className="bg-white rounded-2xl p-8 text-center border border-gray-200 shadow-sm mt-4">
+          <div className="bg-white rounded-3xl p-8 text-center border border-slate-200 shadow-sm mt-3 animate-slide-up">
             <span className="text-4xl block mb-2">🍢</span>
-            <p className="font-bold text-gray-800 text-sm">
-              Tidak ada PKL ditemukan
+            <p className="font-bold text-slate-800 text-sm">
+              Tidak Ada Pedagang yang Cocok
             </p>
-            <p className="text-xs text-gray-500 mt-1 max-w-xs mx-auto">
+            <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto leading-relaxed">
               {query
-                ? `Tidak ada pedagang yang cocok dengan kata kunci "${query}".`
-                : 'Belum ada pedagang PKL yang sedang siaran aktif di sekitarmu.'}
+                ? `Tidak ada lapak PKL yang sesuai kata kunci "${query}". Coba cari kata kunci lain.`
+                : 'Belum ada pedagang PKL yang menyalakan siaran live di sekitarmu saat ini.'}
             </p>
           </div>
         ) : (
-          vendors.map((vendor) => (
-            <div
-              key={vendor.id}
-              className={`bg-white rounded-2xl p-4 shadow-sm border transition-all ${
-                vendor.isPremium
-                  ? 'border-amber-300 ring-1 ring-amber-200'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
-            >
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">
-                      {vendor.category || 'Kuliner'}
-                    </span>
-                    {vendor.isPremium && (
-                      <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-500 text-white">
-                        ✨ Rekomendasi
-                      </span>
-                    )}
+          vendors.map((vendor) => {
+            const emoji = getCategoryEmoji(vendor.category);
+            return (
+              <div
+                key={vendor.id}
+                className={`bg-white rounded-2xl p-4 shadow-md transition-all border animate-slide-up ${
+                  vendor.isPremium
+                    ? 'border-amber-300 ring-1 ring-amber-300/50 shadow-amber-500/5'
+                    : 'border-slate-200/90 hover:border-slate-300'
+                }`}
+              >
+                <div className="flex items-start gap-3 mb-3">
+                  {/* Category Emoji Avatar */}
+                  <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200/80 flex items-center justify-center text-2xl shrink-0">
+                    {emoji}
                   </div>
-                  <h3 className="font-bold text-gray-900 text-base">
-                    {vendor.businessName}
-                  </h3>
+
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                      <span className="px-2 py-0.2 rounded-md text-[10px] font-bold bg-amber-100 text-amber-800">
+                        {vendor.category || 'Kuliner'}
+                      </span>
+                      {vendor.isPremium && (
+                        <span className="px-1.5 py-0.2 rounded-md text-[10px] font-bold bg-gradient-to-r from-amber-500 to-orange-500 text-white">
+                          ✨ Rekomendasi
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="font-bold text-slate-900 text-base truncate">
+                      {vendor.businessName}
+                    </h3>
+                    <p className="text-[11px] text-emerald-600 font-semibold flex items-center gap-1 mt-0.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                      Sedang Aktif Siaran
+                    </p>
+                  </div>
+
+                  {vendor.distanceMeters !== undefined && (
+                    <span className="px-2.5 py-1 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200 flex items-center gap-1 shrink-0">
+                      <span>📍</span>
+                      {formatDistance(vendor.distanceMeters)}
+                    </span>
+                  )}
                 </div>
 
-                {vendor.distanceMeters !== undefined && (
-                  <span className="px-2 py-1 rounded-lg text-xs font-bold bg-blue-50 text-blue-700 border border-blue-100 flex items-center gap-1 whitespace-nowrap">
-                    <span>📍</span>
-                    {formatDistance(vendor.distanceMeters)}
-                  </span>
-                )}
+                {/* Card Action Buttons */}
+                <div className="grid grid-cols-2 gap-2 pt-2.5 border-t border-slate-100">
+                  <button
+                    onClick={() => onViewOnMap(vendor)}
+                    className="py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+                  >
+                    <span>🗺️</span>
+                    <span>Lihat di Peta</span>
+                  </button>
+                  <button
+                    onClick={() => onSelectVendor(vendor)}
+                    className="py-2.5 px-3 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5 shadow-sm shadow-amber-600/30"
+                  >
+                    <span>📋</span>
+                    <span>Menu &amp; Pesan</span>
+                  </button>
+                </div>
               </div>
-
-              <p className="text-xs text-green-600 font-medium flex items-center gap-1 mb-3">
-                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                Sedang Buka &amp; Siaran Live
-              </p>
-
-              {/* Action Buttons */}
-              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-gray-100">
-                <button
-                  onClick={() => onViewOnMap(vendor)}
-                  className="py-2.5 px-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs transition-colors cursor-pointer flex items-center justify-center gap-1"
-                >
-                  <span>🗺️</span> Peta
-                </button>
-                <button
-                  onClick={() => onSelectVendor(vendor)}
-                  className="py-2.5 px-3 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs transition-colors cursor-pointer flex items-center justify-center gap-1 shadow-sm"
-                >
-                  <span>📋</span> Menu &amp; Pesan
-                </button>
-              </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
     </div>
